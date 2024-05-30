@@ -1,0 +1,84 @@
+
+### Kubernetes Architecture
+
+#### Control Plane
+1. **API Server (`kube-apiserver`)**: Exposes the Kubernetes API.
+2. **etcd**: Stores the cluster state persistently.
+3. **Scheduler (`kube-scheduler`)**: Assigns pods to nodes.
+4. **Controller Manager (`kube-controller-manager`)**: Runs various controllers to regulate the state.
+5. **Cloud Controller Manager**: Integrates with cloud provider APIs.
+
+#### Data Plane
+1. **Nodes**: Worker machines running the containers.
+2. **Kubelet**: Node agent ensuring containers are running.
+3. **Container Runtime**: Software running the containers (e.g., Docker, containerd).
+4. **Kube-Proxy**: Maintains network rules on nodes.
+5. **Pods**: Encapsulate containers.
+
+### Diagram
+
+Below is a simplified diagram illustrating the relationship between the control plane and data plane in Kubernetes:
+
+```plaintext
+                         +---------------------------+
+                         |       Control Plane       |
+                         +---------------------------+
+                         |                           |
+                         |  +---------------------+  |
+                         |  |    kube-apiserver   |  |
+                         |  +---------------------+  |
+                         |                           |
+                         |  +--------+ +-----------+ |
+                         |  |  etcd  | |  Scheduler| |
+                         |  +--------+ +-----------+ |
+                         |                           |
+                         |  +-----------------------+ |
+                         |  |  Controller Manager   | |
+                         |  +-----------------------+ |
+                         |                           |
+                         |  +-----------------------+ |
+                         |  | Cloud Ctrl Manager    | |
+                         |  +-----------------------+ |
+                         +---------------------------+
+                                      |
+                                      |
+                                      v
+                         +---------------------------+
+                         |         Data Plane        |
+                         +---------------------------+
+                         |                           |
+          +--------------+-------------------------+ |
+          | Node 1       | Node 2                  | |
+          | +---------+  | +---------+            | |
+          | | Kubelet |  | | Kubelet |            | |
+          | +---------+  | +---------+            | |
+          | +---------+  | +---------+            | |
+          | |kube-proxy| | |kube-proxy|           | |
+          | +---------+  | +---------+            | |
+          | +---------+  | +---------+            | |
+          | |  Pods   |  | |  Pods   |            | |
+          | +---------+  | +---------+            | |
+          | +---------+  | +---------+            | |
+          | |Container|  | |Container|            | |
+          | | Runtime |  | | Runtime |            | |
+          | +---------+  | +---------+            | |
+          +---------------------------------------+ |
+                         +---------------------------+
+```
+
+### Explanation of the Diagram
+1. **Control Plane**:
+   - The **API Server** is the central hub for communication within the Kubernetes control plane.
+   - **etcd** provides persistent storage for all cluster states and configurations.
+   - The **Scheduler** assigns newly created pods to suitable nodes based on resource availability and other constraints.
+   - The **Controller Manager** manages the various controllers that handle routine tasks (e.g., maintaining desired pod counts).
+   - The **Cloud Controller Manager** manages integration with cloud service providers.
+
+2. **Data Plane**:
+   - **Nodes** (e.g., Node 1, Node 2) are the physical or virtual machines that run your containerized applications.
+   - Each node runs a **Kubelet**, which communicates with the control plane to ensure containers are running as expected.
+   - **Kube-Proxy** on each node ensures that networking rules are correctly applied to route traffic to and from the pods.
+   - **Pods** are the smallest deployable units that can contain one or more containers.
+   - **Container Runtime** is the underlying software used to run containers (e.g., Docker).
+
+This architecture separates the concerns of cluster management (control plane) from the actual running of applications (data plane), enabling efficient and scalable orchestration of containerized applications.
